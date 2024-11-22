@@ -1,27 +1,19 @@
-import http.client
-import json
+
 import requests
 import pandas as pd
+import os
 
 
 import requests
 
 # Your app's username and password for Basic Auth
-username = "read-0448a088bc76eb71ab0c2ddbf6980b10"
-password = "3kd/xPeSobolbmi8zm/5zezPiJcSUF654tglJTsV"
+username = os.getenv("RAVELY_USERNAME")
+password = os.getenv("RAVELY_PASSWORD")
 
 # Base URL and endpoint
 base_url = "https://api.ravelry.com"
 endpoint = "/patterns/search.json"
 
-# Query parameters
-# params = {
-#     "query": "baby hat",  # Search term
-#     "page": 1,           # Page number
-#     "page_number": 50,   # Results per page (max is 100)
-#     "craft": "crochet",
-#     "availability": "free"
-# }
 
 # Make the GET request with Basic Auth
 filters = "craft=crochet&availability=ravelry%2Bfree&query=hat&sort=best"
