@@ -10,7 +10,7 @@ As a user, I go to a webpage and type into a textbox "punk rock blanket". The re
 ## Website
 ### Frontend
 - Purpose: Provide an interface where users can input crochet pattern queries.
-- Technology: tbd
+- Technology: React + MaterialUI
 - Endpoints:
     - POST /generate-pattern: Sends user input to the backend for processing.
 - Kubernetes Service: NodePort for external access to website
@@ -32,60 +32,59 @@ As a user, I go to a webpage and type into a textbox "punk rock blanket". The re
 ## Monitoring + Metrics
 - Prometheus + Grafana
 
-## 
+# Website
+## Setup 
+1. [Install Node Version Manager (nvm)](https://github.com/nvm-sh/nvm)
+```bash
+# Install  latest node
+nvm install node
+
+# Use node
+nvm use <node_version>
+
+# OpenSSL Legacy support
+export NODE_OPTIONS=--openssl-legacy-provider
+```
+3. Install other packages
+```bash
+
+# Start website
+cd frontend && npm start
+
+# View on: http://localhost:3000/
+
+```
 
 # LLM
 ## Setup LLM
 1. [Install Helm](https://helm.sh/docs/intro/install/)
 2. [Install Minikube](https://minikube.sigs.k8s.io/docs/start/?arch=%2Flinux%2Fx86-64%2Fstable%2Fbinary+download)
-3. [Install Ollama helm workload](https://github.com/otwld/ollama-helm)
+3. [Set up Minikube with NVIDIA GPUs](https://minikube.sigs.k8s.io/docs/tutorials/nvidia/)
+4. [Install Ollama helm workload](https://github.com/otwld/ollama-helm)
 
 ```bash
-# Start Kubernetes cluster
-minikube start
+# Install Nvidia device plugin
+kubectl apply -f https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/v0.13.0/nvidia-device-plugin.yml
 
-# Deploy ollama Kubernetes pod
-```
+# Start Kubernetes cluster with nvidia gpu
+minikube start --driver docker --container-runtime docker --gpus all
 
-- Create project, install dependencies
-```bash
-cd /code/llm
-source bin/activate
-python3 -m venv .
-```
-- Download llama
-https://www.llama.com/llama-downloads/
-```bash
-pip install llama-stack
+# Verify minikube runnign with gpu
+kubectl describe node minikube | grep -A 5 Allocatable
 
-# See latest available models, determine model ID
-llama model list
+# Deploy ollama Kubernetes pod, service, deployment
+helm install ollama ollama-helm/ollama --namespace ollama
 
-# Select a model
-llama model download --source meta --model-id  Llama3.1-8B  
-# llama-agents have safety enabled by default. For this, you will need
-# safety models -- Llama-Guard and Prompt-Guard
-llama download --source meta --model-id Prompt-Guard-86M 
-llama download --source meta --model-id Llama-Guard-3-1B 
-```
-- Clone llama-stack repo
-https://github.com/meta-llama/llama-stack
-```
-cd /code
-git clone git@github.com:meta-llama/llama-stack.git
-```
+# Upgrade
+helm upgrade ollama ollama-helm/ollama --namespace knotty-ai --values values.yaml
 
-- Set up Docker repo
-https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository
+# View deployed pod, service, deployment
+kubectl get all -n knotty-ai
 
-
-- Run llama in docker
-https://llama-stack.readthedocs.io/en/latest/getting_started/distributions/self_hosted_distro/meta-reference-gpu.html
-```
-
-sudo apt install docker.io
-sudo apt install docker-compose
-
-cd distributions/meta-reference-gpu && sudo docker-compose up
-
+# Run query
+curl http://localhost:11434/api/generate -d '{
+  "model": "llama3.2:1b",
+  "prompt": "Why is the sky blue?",
+  "stream": false
+}'
 ```
