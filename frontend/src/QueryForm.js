@@ -4,8 +4,8 @@ import { HelpOutline } from "@mui/icons-material";
 
 function QueryForm() {
   const [response, setResponse] = useState(null);
-  // const [blanketSize, setBlanketSize] = useState(null);
-  // const [yarnWeight, setYarnWeight] = useState(null);
+  const [blanketSize, setBlanketSize] = useState('Any');
+  const [yarnWeight, setYarnWeight] = useState('Medium');
   const [query, setQuery] = useState("");
 
   const handleQuery = async () => {
@@ -36,21 +36,21 @@ function QueryForm() {
 
   return (
     <div>
-      {/* <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" gutterBottom>
         Design Your Crochet Blanket
-      </Typography> */}
+      </Typography>
 
       {/* Blanket Size Selection */}
-      {/* <Typography variant="h6" gutterBottom>
+      <Typography variant="h6" gutterBottom>
         Select Blanket Size:
       </Typography>
       <ToggleButtonGroup
         value={blanketSize}
         exclusive
-        onChange={(e, newSize) => setBlanketSize(newSize)}
+        onChange={(e, blanketSize) => setBlanketSize(blanketSize)}
         style={{ marginBottom: "20px" }}
       >
-        {["King", "Queen", "Twin", "Lap", "Baby"].map((size) => (
+        {["King", "Queen", "Twin", "Throw", "Baby"].map((size) => (
           <ToggleButton key={size} value={size} style={{ textTransform: "capitalize" }}>
             {size}
           </ToggleButton>
@@ -58,16 +58,22 @@ function QueryForm() {
         <ToggleButton value="Any" style={{ textTransform: "capitalize" }}>
           Any
         </ToggleButton>
-      </ToggleButtonGroup> */}
+      </ToggleButtonGroup>
+      {/* Display Selected Value */}
+      {blanketSize && (
+        <Typography variant="body1" gutterBottom>
+          Blanket Size: {blanketSize}
+        </Typography>
+      )}
 
       {/* Yarn Weight Selection */}
-      {/* <Typography variant="h6" gutterBottom>
+      <Typography variant="h6" gutterBottom>
         Select Yarn Weight:
       </Typography>
       <ToggleButtonGroup
         value={yarnWeight}
         exclusive
-        onChange={(e, newWeight) => setYarnWeight(newWeight)}
+        onChange={(e, yarnWeight) => setYarnWeight(yarnWeight)}
         style={{ marginBottom: "20px" }}
       >
         {[
@@ -88,7 +94,13 @@ function QueryForm() {
           <HelpOutline />
           Any
         </ToggleButton>
-      </ToggleButtonGroup> */}
+      </ToggleButtonGroup>
+      {/* Display Selected Value */}
+      {yarnWeight && (
+        <Typography variant="body1" gutterBottom>
+          Yarn Weight: {yarnWeight}
+        </Typography>
+      )}
 
 
       <TextField
